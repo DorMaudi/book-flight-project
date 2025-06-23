@@ -27,7 +27,7 @@ describe('App component', () => {
       },
     ];
 
-    cy.intercept('GET', '**/flights', flights).as('getFlights');
+    cy.intercept('GET', '**/flights', { body: flights }).as('getFlights');
     mount(<App />);
     cy.wait('@getFlights');
     cy.get('.flight-card').should('have.length', 2);

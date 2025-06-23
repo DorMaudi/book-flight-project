@@ -31,10 +31,6 @@ jobs:
         run: npm start &
         working-directory: backend/FlightService
 
-      - name: Wait for server to be ready
-        run: npx wait-on http://localhost:12877/flights
-        working-directory: backend/FlightService
-
       - name: Run Test
         run: npm test
         working-directory: backend/FlightService

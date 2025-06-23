@@ -8,6 +8,7 @@ export default defineConfig({
       bundler: 'vite',
       viteConfig,
     },
-    specPattern: 'src/**/*.cy.{js,jsx,ts,tsx}'
+    specPattern: 'src/**/*.cy.{js,jsx,ts,tsx}',
+    supportFile: false,
   },
 });

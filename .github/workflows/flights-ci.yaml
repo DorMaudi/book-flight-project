@@ -45,7 +45,7 @@ jobs:
 
       - name: Start frontend in background
         run: npm run dev
-        working-directory: backend/FlightService
+        working-directory: frontend-book-flight-project
 
       - name: Run e2e tests
         run: npm run test

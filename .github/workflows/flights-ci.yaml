@@ -10,10 +10,6 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
-    env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      PORT: ${{ secrets.PORT }}
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -23,31 +19,47 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install backend dependencies
+        run: npm ci
         working-directory: backend/FlightService
 
-      - name: Start server in background
-        run: npm start &
+      - name: Create backend .env file
+        run: |
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
+          echo "PORT=12877" >> .env
         working-directory: backend/FlightService
 
-      - name: Wait for server to be ready
+      - name: Start backend in background
+        run: nohup npm start > backend.log 2>&1 &
+        working-directory: backend/FlightService
+
+      - name: Wait for backend
         run: npx wait-on http://localhost:12877/flights
-        working-directory: backend/FlightService
 
-      - name: Run Test
+      - name: Run backend tests
         run: npm test
         working-directory: backend/FlightService
 
-      - name: Install front dependencies
-        run: npm install
+      - name: Install frontend dependencies
+        run: npm ci
         working-directory: frontend-book-flight-project
 
-      - name: Start frontend in background
-        run: npm run dev &
+      - name: Create frontend .env file
+        run: echo "VITE_URL=http://localhost:12877" > .env
         working-directory: frontend-book-flight-project
 
-      - name: Run e2e tests
+      - name: Build frontend
+        run: npm run build
+        working-directory: frontend-book-flight-project
+
+      - name: Start frontend preview in background
+        run: nohup npm run preview > preview.log 2>&1 &
+        working-directory: frontend-book-flight-project
+
+      - name: Wait for frontend
+        run: npx wait-on http://localhost:4173
+
+      - name: Run Cypress e2e tests
         run: npm run test
         working-directory: frontend-book-flight-project
 

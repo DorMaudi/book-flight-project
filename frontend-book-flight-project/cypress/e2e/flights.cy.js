@@ -1,6 +1,5 @@
 describe('Quick Flight E2E', () => {
-    const baseUrl = Cypress.config().baseUrl; // ⬅️ זה ייקח אוטומטית את 4173 מהקונפיג
-
+  const baseUrl = 'https://book-flight-project-1.onrender.com/';
 
   // 📌 שלב ראשון: למנוע כשלון על שגיאות צד לקוח (שימושי ל־CI)
   Cypress.on('uncaught:exception', (err, runnable) => {
@@ -8,7 +7,7 @@ describe('Quick Flight E2E', () => {
     return false;
   });
 
-  // 📌 נוודאהטיסות נטענו לפני הרצת טסטים שתלויים ב־DOM
+  // 📌 נוודאשהטיסות נטענו לפני הרצת טסטים שתלויים ב־DOM
   beforeEach(() => {
     cy.intercept('GET', '**/flights').as('getFlights');
     cy.visit(baseUrl);

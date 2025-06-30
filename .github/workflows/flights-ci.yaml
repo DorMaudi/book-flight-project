@@ -15,64 +15,42 @@ jobs:
       PORT: ${{ secrets.PORT }}
 
     steps:
-      - name: Checkout repository
+      - name: 🧾 Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: 🛠️ Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
 
-      - name: Install backend dependencies
+      - name: 📦 Install backend dependencies
         run: npm ci
         working-directory: backend/FlightService
 
-      - name: Create backend .env
+      - name: 🔐 Create .env for backend
         run: |
           echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
           echo "PORT=${{ secrets.PORT }}" >> .env
         working-directory: backend/FlightService
 
-      - name: Start backend
-        run: nohup npm start > backend.log 2>&1 &
-        working-directory: backend/FlightService
-
-      - name: Wait for backend
-        run: npx wait-on http://localhost:12877/flights
-
-      - name: Run backend tests
+      - name: 🧪 Run backend tests
         run: npm test
         working-directory: backend/FlightService
 
-      - name: Install frontend dependencies
+      - name: 📦 Install frontend dependencies
         run: npm ci
         working-directory: frontend-book-flight-project
 
-      - name: Create frontend .env
-        run: echo "VITE_URL=http://localhost:12877" > .env
-        working-directory: frontend-book-flight-project
-
-      - name: Build frontend
-        run: npm run build
-        working-directory: frontend-book-flight-project
-
-      - name: Start frontend preview
-        run: nohup npm run preview > preview.log 2>&1 &
-        working-directory: frontend-book-flight-project
-
-      - name: Wait for frontend
-        run: npx wait-on http://localhost:5173
-
-      - name: Run Cypress e2e tests
+      - name: 🧪 Run Cypress tests on deployed frontend
         run: npx cypress run --e2e
         working-directory: frontend-book-flight-project
         env:
-          CYPRESS_baseUrl: http://localhost:5173
+          CYPRESS_baseUrl: https://book-flight-project-1.onrender.com
 
-      - name: Deploy frontend to Render
+      - name: 🚀 Deploy frontend to Render
         if: success()
         run: curl "https://api.render.com/deploy/srv-d1h681ali9vc73bcuffg?key=LA7b1lL6W7E"
 
-      - name: Deploy backend to Render
+      - name: 🚀 Deploy backend to Render
         if: success()
         run: curl -X POST "https://api.render.com/deploy/srv-d1h655fgi27c73cbafq0?key=peyc2JXSFHA"

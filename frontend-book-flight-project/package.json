@@ -3,15 +3,17 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "scripts": {
+ "scripts": {
   "dev": "vite",
   "build": "vite build",
   "lint": "eslint .",
-  "preview": "vite preview",
+  "preview": "vite preview --port 4173",
   "test": "cypress run --e2e",
   "start:all": "concurrently -k -s first \"npm run start-backend\" \"npm run dev\"",
-  "start-backend": "npm start --prefix ../backend/FlightService"
+  "start-backend": "npm start --prefix ../backend/FlightService",
+  "start:ci": "concurrently -k -s first \"npm run preview\" \"npx wait-on http://localhost:4173 && npm run test\""
 }
+
 ,
   "dependencies": {
     "axios": "^1.9.0",

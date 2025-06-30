@@ -46,8 +46,8 @@ jobs:
         run: npm run dev &
         working-directory: frontend-book-flight-project
 
-      - name: Run e2e tests
-        run: npm run test
+      - name: Run Cypress tests
+        run: npm run start:ci
         working-directory: frontend-book-flight-project
 
       - name: Deploy frontend to Render

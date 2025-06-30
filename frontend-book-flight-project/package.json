@@ -8,7 +8,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview --port 4173 --strictPort",
-  "start:ci": "concurrently -k -s first \"npm run preview\" \"npx wait-on http://localhost:4173 && npm run test:cypress\"",
+  "start:ci": "concurrently -k -s first \"npm run preview\" \"npx wait-on http://localhost:4173 --timeout 10000 && npm run test:cypress\""
+,
   "test:cypress": "cypress run --e2e"
 },
   "dependencies": {

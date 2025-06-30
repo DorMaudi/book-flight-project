@@ -1,5 +1,6 @@
 describe('Quick Flight E2E', () => {
-  const baseUrl = 'http://localhost:5173';
+    const baseUrl = Cypress.config().baseUrl; // ⬅️ זה ייקח אוטומטית את 4173 מהקונפיג
+
 
   // 📌 שלב ראשון: למנוע כשלון על שגיאות צד לקוח (שימושי ל־CI)
   Cypress.on('uncaught:exception', (err, runnable) => {

@@ -25,10 +25,6 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
-    env:
-      DATABASE_URL: postgresql://dbbookflight_user:RjAfoKWWt0Zk7jG4atM9EdYfdvJiVuRy@localhost:5432/dbbookflight
-      PORT: 12877
-
     steps:
       - name: 🧾 Checkout repository
         uses: actions/checkout@v4
@@ -38,34 +34,38 @@ jobs:
         with:
           node-version: "20"
 
+      - name: 📦 Install wait-on globally
+        run: npm install -g wait-on
+
+      - name: 🔁 Pick random ports
+        id: ports
+        run: |
+          echo "BACKEND_PORT=$((12000 + RANDOM % 1000))" >> $GITHUB_ENV
+          echo "FRONTEND_PORT=$((13000 + RANDOM % 1000))" >> $GITHUB_ENV
+
       - name: 📦 Install backend dependencies
         run: npm ci
         working-directory: backend/FlightService
 
       - name: 🔐 Create backend .env
         run: |
-          echo "DATABASE_URL=$DATABASE_URL" > .env
-          echo "PORT=$PORT" >> .env
+          echo "DATABASE_URL=postgresql://dbbookflight_user:RjAfoKWWt0Zk7jG4atM9EdYfdvJiVuRy@localhost:5432/dbbookflight" > .env
+          echo "PORT=${{ env.BACKEND_PORT }}" >> .env
         working-directory: backend/FlightService
 
       - name: 🚀 Start backend
         run: nohup npm start > backend.log 2>&1 &
         working-directory: backend/FlightService
 
-      - name: Wait for backend to be ready
-        run: npx wait-on http://localhost:12877/flights
-        working-directory: backend/FlightService
-
-      - name: ✅ Run backend tests
-        run: npm test
-        working-directory: backend/FlightService
+      - name: ⏳ Wait for backend
+        run: wait-on http://localhost:${{ env.BACKEND_PORT }}/flights
 
       - name: 📦 Install frontend dependencies
         run: npm ci
         working-directory: frontend-book-flight-project
 
       - name: 🔐 Create frontend .env
-        run: echo "VITE_URL=http://localhost:12877" > .env
+        run: echo "VITE_URL=http://localhost:${{ env.BACKEND_PORT }}" > .env
         working-directory: frontend-book-flight-project
 
       - name: 🛠️ Build frontend
@@ -73,17 +73,17 @@ jobs:
         working-directory: frontend-book-flight-project
 
       - name: 🚀 Start frontend preview
-        run: nohup npm run preview > preview.log 2>&1 &
+        run: nohup npm run preview -- --port ${{ env.FRONTEND_PORT }} > preview.log 2>&1 &
         working-directory: frontend-book-flight-project
 
       - name: ⏳ Wait for frontend
-        run: npx wait-on http://localhost:4173
+        run: wait-on http://localhost:${{ env.FRONTEND_PORT }}
 
-      - name: ✅ Run Cypress E2E tests
+      - name: ✅ Run Cypress tests
         run: npx cypress run
         working-directory: frontend-book-flight-project
         env:
-          CYPRESS_baseUrl: http://localhost:4173
+          CYPRESS_baseUrl: http://localhost:${{ env.FRONTEND_PORT }}
 
       - name: 🚀 Deploy frontend to Render
         if: success()

@@ -1,5 +1,5 @@
 describe('Quick Flight E2E', () => {
-  const baseUrl = Cypress.env('VITE_URL') || 'http://localhost:5173';
+  const baseUrl = 'http://localhost:5173' || Cypress.env('VITE_URL');
 
   it('loads the homepage and shows the title', () => {
     cy.visit(baseUrl);

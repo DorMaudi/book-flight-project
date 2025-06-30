@@ -12,8 +12,7 @@ jobs:
 
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      PORT: 0  # אוטומטי או פורט אקראי (Node יקצה לבד)
-      VITE_URL: http://localhost:5173  # כדי שה-frontend ידע לאן לפנות ל-backend
+      PORT: ${{ secrets.PORT }}
 
     steps:
       - name: Checkout repository
@@ -24,30 +23,48 @@ jobs:
         with:
           node-version: "20"
 
+      ######################
+      # BACKEND SETUP + TEST
+      ######################
+
       - name: Install backend dependencies
         run: npm install
         working-directory: backend/FlightService
 
-      - name: Run backend unit tests
+      - name: Start backend in background
+        run: npm start &
+        working-directory: backend/FlightService
+
+      - name: Wait for backend to be ready
+        run: npx wait-on http://localhost:12877/flights
+
+      - name: Run backend tests
         run: npm test
         working-directory: backend/FlightService
+
+      ######################
+      # FRONTEND + CYPRESS
+      ######################
 
       - name: Install frontend dependencies
         run: npm install
         working-directory: frontend-book-flight-project
 
-      - name: Install concurrently package for running services together
-        run: npm install concurrently --save-dev
+      - name: Start frontend in background
+        run: npm run dev -- --port 4173 &
         working-directory: frontend-book-flight-project
 
-      - name: Start frontend & backend and run Cypress tests
-        run: |
-          npm run start:all & # מריץ את שניהם יחד
-          npx wait-on http://localhost:5173
-          npm test
+      - name: Wait for frontend to be ready
+        run: npx wait-on http://localhost:4173
+
+      - name: Run E2E Cypress tests
+        run: npm run test
         working-directory: frontend-book-flight-project
 
-      # רק אם אתה רוצה לפרוס ל־Render אחרי כל Push ל-main:
+      ######################
+      # DEPLOY TO RENDER
+      ######################
+
       - name: Deploy frontend to Render
         run: curl "https://api.render.com/deploy/srv-d1h681ali9vc73bcuffg?key=LA7b1lL6W7E"
 

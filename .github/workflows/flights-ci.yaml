@@ -12,7 +12,6 @@ jobs:
 
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      PORT: ${{ secrets.PORT }}
 
     steps:
       - name: Checkout repository
@@ -31,8 +30,8 @@ jobs:
         run: npm start &
         working-directory: backend/FlightService
 
-      - name: Wait for server to be ready
-        run: npx wait-on http://localhost:12877/
+      - name: Wait for backend to be ready
+        run: npx wait-on http://localhost:12877/flights
         working-directory: backend/FlightService
 
       - name: Run Test

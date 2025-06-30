@@ -61,13 +61,13 @@ jobs:
         working-directory: frontend-book-flight-project
 
       - name: Wait for frontend
-        run: npx wait-on http://localhost:4173
+        run: npx wait-on http://localhost:5173
 
       - name: Run Cypress e2e tests
         run: npx cypress run --e2e
         working-directory: frontend-book-flight-project
         env:
-          CYPRESS_baseUrl: http://localhost:4173
+          CYPRESS_baseUrl: http://localhost:5173
 
       - name: Deploy frontend to Render
         if: success()

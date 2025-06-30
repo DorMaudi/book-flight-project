@@ -8,7 +8,7 @@ describe('Quick Flight E2E', () => {
     return false;
   });
 
-  // 📌 נוודאשהטיסות נטענו לפני הרצת טסטים שתלויים ב־DOM
+  // 📌 נוודאהטיסות נטענו לפני הרצת טסטים שתלויים ב־DOM
   beforeEach(() => {
     cy.intercept('GET', '**/flights').as('getFlights');
     cy.visit(baseUrl);

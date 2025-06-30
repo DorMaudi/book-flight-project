@@ -52,8 +52,9 @@ jobs:
         run: nohup npm start > backend.log 2>&1 &
         working-directory: backend/FlightService
 
-      - name: ⏳ Wait for backend to be ready
+      - name: Wait for backend to be ready
         run: npx wait-on http://localhost:12877/flights
+        working-directory: backend/FlightService
 
       - name: ✅ Run backend tests
         run: npm test

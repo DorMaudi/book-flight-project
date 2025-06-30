@@ -25,41 +25,46 @@ const [myFlightError, setMyFlightError] = useState('');
   ])
   const [orderLoading, setOrderLoading] = useState(false)
 
- const filteredFlights = flights
-  .filter(flight => !!flight.departureTime)
-  .filter(flight => flight.available_seats > 0)
-  .filter(flight => {
-    const matchesDeparture = flight.origin.toLowerCase().includes(departureFilter.toLowerCase());
-    const matchesDestination = flight.destination.toLowerCase().includes(destinationFilter.toLowerCase());
-    const matchesAirline = flight.airline.toLowerCase().includes(airlineFilter.toLowerCase());
-    const matchesPrice = priceFilter === '' || flight.price <= Number(priceFilter);
-    const matchesDate =
-      !dateFilter ||
-      new Date(flight.departureTime).toISOString().slice(0, 10) === dateFilter;
-    return (
-      matchesDeparture &&
-      matchesDestination &&
-      matchesAirline &&
-      matchesPrice &&
-      matchesDate
-    );
-  });
+const filteredFlights = Array.isArray(flights)
+  ? flights
+      .filter(flight => !!flight.departureTime)
+      .filter(flight => flight.available_seats > 0)
+      .filter(flight => {
+        const matchesDeparture = flight.origin.toLowerCase().includes(departureFilter.toLowerCase());
+        const matchesDestination = flight.destination.toLowerCase().includes(destinationFilter.toLowerCase());
+        const matchesAirline = flight.airline.toLowerCase().includes(airlineFilter.toLowerCase());
+        const matchesPrice = priceFilter === '' || flight.price <= Number(priceFilter);
+        const matchesDate =
+          !dateFilter ||
+          new Date(flight.departureTime).toISOString().slice(0, 10) === dateFilter;
+        return (
+          matchesDeparture &&
+          matchesDestination &&
+          matchesAirline &&
+          matchesPrice &&
+          matchesDate
+        );
+      })
+  : [];
 
   useEffect(() => {
-    const fetchFlights = async () => {
-      setLoading(true)
-      try {
-        console.log('Fetching flights from:', import.meta.env.VITE_URL + '/flights')
-        const response = await axios.get(import.meta.env.VITE_URL + '/flights')
-        setFlights(response.data)
-        setError(null)
-      } catch (err) {
-        setError('Error fetching flights')
-      }
-      setLoading(false)
+  const fetchFlights = async () => {
+    setLoading(true)
+    try {
+      console.log('🔍 Fetching flights from:', import.meta.env.VITE_URL + '/flights')
+      const response = await axios.get(import.meta.env.VITE_URL + '/flights')
+      console.log('✅ Response:', response.data)
+      setFlights(response.data)
+      setError(null)
+    } catch (err) {
+      console.error('❌ Error fetching flights:', err)
+      setError('Error fetching flights')
     }
-    fetchFlights()
-  }, [])
+    setLoading(false)
+  }
+  fetchFlights()
+}, [])
+
 
   // Open modal and set selected flight
   const handleCardClick = (flight) => {

@@ -12,6 +12,8 @@ jobs:
 
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      PORT: 0  # אוטומטי או פורט אקראי (Node יקצה לבד)
+      VITE_URL: http://localhost:5173  # כדי שה-frontend ידע לאן לפנות ל-backend
 
     steps:
       - name: Checkout repository
@@ -22,34 +24,30 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install dependencies
+      - name: Install backend dependencies
         run: npm install
         working-directory: backend/FlightService
 
-      - name: Start server in background
-        run: npm start &
-        working-directory: backend/FlightService
-
-      - name: Wait for backend to be ready
-        run: npx wait-on http://localhost:12877/flights
-        working-directory: backend/FlightService
-
-      - name: Run Test
+      - name: Run backend unit tests
         run: npm test
         working-directory: backend/FlightService
 
-      - name: Install front dependencies
+      - name: Install frontend dependencies
         run: npm install
         working-directory: frontend-book-flight-project
 
-      - name: Start frontend in background
-        run: npm run dev &
+      - name: Install concurrently package for running services together
+        run: npm install concurrently --save-dev
         working-directory: frontend-book-flight-project
 
-      - name: Run e2e tests
-        run: npm run test
+      - name: Start frontend & backend and run Cypress tests
+        run: |
+          npm run start:all & # מריץ את שניהם יחד
+          npx wait-on http://localhost:5173
+          npm test
         working-directory: frontend-book-flight-project
 
+      # רק אם אתה רוצה לפרוס ל־Render אחרי כל Push ל-main:
       - name: Deploy frontend to Render
         run: curl "https://api.render.com/deploy/srv-d1h681ali9vc73bcuffg?key=LA7b1lL6W7E"
 

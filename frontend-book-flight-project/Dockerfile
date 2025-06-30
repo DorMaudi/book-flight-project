@@ -13,6 +13,8 @@ RUN --mount=type=cache,target=/root/.npm \
 
 # Copy the rest of the application source
 COPY --link . .
+ARG VITE_URL
+ENV VITE_URL=${VITE_URL}
 
 # Build the production-ready static files
 RUN npm run build

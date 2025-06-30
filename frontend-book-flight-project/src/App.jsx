@@ -49,6 +49,7 @@ const [myFlightError, setMyFlightError] = useState('');
     const fetchFlights = async () => {
       setLoading(true)
       try {
+        console.log('Fetching flights from:', import.meta.env.VITE_URL + '/flights')
         const response = await axios.get(import.meta.env.VITE_URL + '/flights')
         setFlights(response.data)
         setError(null)

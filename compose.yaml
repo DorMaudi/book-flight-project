@@ -13,35 +13,43 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
 
-  js-flightservice:
+  backend:
     build:
       context: ./backend/FlightService
       dockerfile: Dockerfile
+    container_name: backend
+    ports:
+      - "12877:12877"
+    environment:
+      - PORT=12877
+      - DATABASE_URL=postgresql://dbbookflight_user:RjAfoKWWt0Zk7jG4atM9EdYfdvJiVuRy@dpg-d0rl9nali9vc738n34b0-a.frankfurt-postgres.render.com/dbbookflight
     restart: unless-stopped
     init: true
     env_file:
       - ./backend/FlightService/.env
-    ports:
-      - "12877:12877"
     networks:
       - app-net
     depends_on:
       - db
 
-  js-frontend-book-flight-project:
+  frontend:
     build:
       context: ./frontend-book-flight-project
-      dockerfile: Dockerfile
+      args:
+        VITE_URL: http://localhost:12877
+    container_name: frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_URL=http://localhost:5173
     restart: unless-stopped
     init: true
     env_file:
       - ./frontend-book-flight-project/.env
-    ports:
-      - "4173:4173"
     networks:
       - app-net
     depends_on:
-      - js-flightservice
+      - backend
 
 networks:
   app-net:

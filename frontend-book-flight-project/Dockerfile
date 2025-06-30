@@ -47,7 +47,7 @@ RUN chown -R appuser:appgroup /app /home/appuser
 USER appuser
 
 # Expose the port Vite preview uses by default
-EXPOSE 4173
+EXPOSE 5173
 
 # Start the production preview server
-CMD ["npx", "serve", "dist", "-l", "4173"]
+CMD ["npx", "serve", "dist", "-l", "5173"]

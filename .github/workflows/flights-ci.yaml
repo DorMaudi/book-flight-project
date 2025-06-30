@@ -32,7 +32,7 @@ jobs:
         working-directory: backend/FlightService
 
       - name: Wait for server to be ready
-        run: npx wait-on http://localhost:12877
+        run: npx wait-on http://localhost:12877/
         working-directory: backend/FlightService
 
       - name: Run Test

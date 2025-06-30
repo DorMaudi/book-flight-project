@@ -15,42 +15,44 @@ jobs:
       PORT: ${{ secrets.PORT }}
 
     steps:
-      - name: 🧾 Checkout repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: 🛠️ Set up Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
 
-      - name: 📦 Install backend dependencies
-        run: npm ci
+      - name: Install dependencies
+        run: npm install
         working-directory: backend/FlightService
 
-      - name: 🔐 Create .env for backend
-        run: |
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
-          echo "PORT=${{ secrets.PORT }}" >> .env
+      - name: Start server in background
+        run: npm start &
         working-directory: backend/FlightService
 
-      - name: 🧪 Run backend tests
+      - name: Wait for server to be ready
+        run: npx wait-on http://localhost:12877/flights
+        working-directory: backend/FlightService
+
+      - name: Run Test
         run: npm test
         working-directory: backend/FlightService
 
-      - name: 📦 Install frontend dependencies
-        run: npm ci
+      - name: Install front dependencies
+        run: npm install
         working-directory: frontend-book-flight-project
 
-      - name: 🧪 Run Cypress tests on deployed frontend
-        run: npx cypress run --e2e
+      - name: Start frontend in background
+        run: npm run dev &
         working-directory: frontend-book-flight-project
-        env:
-          CYPRESS_baseUrl: https://book-flight-project-1.onrender.com
 
-      - name: 🚀 Deploy frontend to Render
-        if: success()
+      - name: Run e2e tests
+        run: npm run test
+        working-directory: frontend-book-flight-project
+
+      - name: Deploy frontend to Render
         run: curl "https://api.render.com/deploy/srv-d1h681ali9vc73bcuffg?key=LA7b1lL6W7E"
 
-      - name: 🚀 Deploy backend to Render
-        if: success()
+      - name: Deploy backend to Render
         run: curl -X POST "https://api.render.com/deploy/srv-d1h655fgi27c73cbafq0?key=peyc2JXSFHA"

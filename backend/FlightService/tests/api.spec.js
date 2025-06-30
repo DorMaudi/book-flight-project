@@ -24,17 +24,24 @@ describe('FlightService API', function () {
     const flight = flightsRes.body.find(f => f.available_seats > 0);
     if (!flight) this.skip();
 
+    // Generate a random passenger_id for uniqueness
+    const randomId = 'TESTPASS' + Math.floor(Math.random() * 1000000);
+
     const booking = {
       flight_number: flight.flightNumber,
       passenger_name: 'Test User',
       passenger_email: 'test@example.com',
-      passenger_id: 'TESTPASS123',
+      passenger_id: randomId,
       total_price: flight.price
     };
 
     const res = await request('http://localhost:12877')
       .post('/bookings')
       .send(booking);
+
+    if (res.status !== 201) {
+      console.log('Booking failed:', res.body);
+    }
 
     expect(res).to.have.status(201);
     expect(res.body).to.have.property('flight_number', flight.flightNumber);

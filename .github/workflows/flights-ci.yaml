@@ -42,9 +42,7 @@ jobs:
         run: npm install
         working-directory: frontend-book-flight-project
 
-      - name: Start frontend in background
-        run: npm run dev &
-        working-directory: frontend-book-flight-project
+    
 
       - name: Run Cypress tests
         run: npm run start:ci

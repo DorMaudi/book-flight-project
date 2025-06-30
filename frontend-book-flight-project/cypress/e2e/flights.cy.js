@@ -1,5 +1,5 @@
 describe('Quick Flight E2E', () => {
-  const baseUrl = 'http://localhost:4173';
+  const baseUrl = 'http://localhost:5173';
 
   // 📌 שלב ראשון: למנוע כשלון על שגיאות צד לקוח (שימושי ל־CI)
   Cypress.on('uncaught:exception', (err, runnable) => {

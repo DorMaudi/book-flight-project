@@ -12,7 +12,6 @@ jobs:
 
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      PORT: ${{ secrets.PORT }}
 
     steps:
       - name: Checkout repository
@@ -23,47 +22,33 @@ jobs:
         with:
           node-version: "20"
 
-      ######################
-      # BACKEND SETUP + TEST
-      ######################
-
-      - name: Install backend dependencies
+      - name: Install dependencies
         run: npm install
         working-directory: backend/FlightService
 
-      - name: Start backend in background
+      - name: Start server in background
         run: npm start &
         working-directory: backend/FlightService
 
       - name: Wait for backend to be ready
         run: npx wait-on http://localhost:12877/flights
+        working-directory: backend/FlightService
 
-      - name: Run backend tests
+      - name: Run Test
         run: npm test
         working-directory: backend/FlightService
 
-      ######################
-      # FRONTEND + CYPRESS
-      ######################
-
-      - name: Install frontend dependencies
+      - name: Install front dependencies
         run: npm install
         working-directory: frontend-book-flight-project
 
       - name: Start frontend in background
-        run: npm run dev -- --port 4173 &
+        run: npm run dev &
         working-directory: frontend-book-flight-project
 
-      - name: Wait for frontend to be ready
-        run: npx wait-on http://localhost:4173
-
-      - name: Run E2E Cypress tests
+      - name: Run e2e tests
         run: npm run test
         working-directory: frontend-book-flight-project
-
-      ######################
-      # DEPLOY TO RENDER
-      ######################
 
       - name: Deploy frontend to Render
         run: curl "https://api.render.com/deploy/srv-d1h681ali9vc73bcuffg?key=LA7b1lL6W7E"

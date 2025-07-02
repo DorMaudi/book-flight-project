@@ -52,9 +52,9 @@ npm run test
 
 ---
 
-⚙️ CI/CD & Deployment
-Automated tests and builds run on every push via GitHub Actions (flights-ci.yaml).
-The workflow installs dependencies, runs backend and frontend tests, and can deploy to cloud platforms (e.g., Render).
+## ⚙️ CI/CD & Deployment
+- Automated tests and builds run on every push via GitHub Actions (flights-ci.yaml).
+- The workflow installs dependencies, runs backend and frontend tests, and can deploy to cloud platforms (e.g., Render).
 
 ---
 

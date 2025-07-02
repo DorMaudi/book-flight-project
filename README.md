@@ -76,3 +76,44 @@ Make sure Docker is installed and running on your system before executing this c
 - [Docker](https://www.docker.com/) (optional, for containerized deployment)
 
 ---
+
+## 🧩 Steps to Expand the System
+### 1. Add New Backend Features
+Create new endpoints:
+Add new routes in controllers and update src/index.js.
+Add business logic:
+Implement new services in src/services.
+Database changes:
+Update models and queries in src/data-access and apply migrations to your PostgreSQL DB.
+### 2. Expand the Frontend
+Add new pages/components:
+Create new React components in src.
+Update API calls:
+Use axios to connect new frontend features to backend endpoints.
+Improve UI/UX:
+Add forms, modals, or new navigation as needed.
+### 3. Update Tests
+Backend:
+Add or update tests in tests using Mocha/Chai.
+Frontend:
+Add or update Cypress E2E tests in e2e.
+### 4. Update Docker Configuration
+Add new services:
+If needed, add new services (e.g., cache, auth) to compose.yaml.
+Update environment variables:
+Add any new variables to .env files and compose.yaml.
+### 5. Update CI/CD Pipeline
+Modify workflow:
+Update flights-ci.yaml to include new build, test, or deploy steps.
+Add new test jobs:
+Ensure new features are covered in automated tests.
+### 6. Document the Changes
+Update README.md:
+Add usage instructions for new features.
+Add API docs:
+Document new endpoints and data models.
+### 7. Deploy the Updated System
+Local:
+Run docker compose up --build to test locally.
+Production:
+Push to main branch to trigger CI/CD and deploy to your cloud provider. 

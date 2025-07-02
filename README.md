@@ -15,9 +15,6 @@ This is a full-stack application for booking flights, including both frontend an
 - **Database:** `PostgreSQL`  
   Stores all flight, booking, and passenger data.
 
-- **Database:** `PostgreSQL`
-  Stores all flight, booking, and passenger data.
-
 ---
 
 ## 🚀 How to Run the Project

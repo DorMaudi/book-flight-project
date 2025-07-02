@@ -12,6 +12,9 @@ This is a full-stack application for booking flights, including both frontend an
 - **Frontend:** `frontend-book-flight-project`  
   A web interface for browsing flights and making bookings.
 
+- **Database:** `PostgreSQL`
+  Stores all flight, booking, and passenger data.
+
 ---
 
 ## 🚀 How to Run the Project

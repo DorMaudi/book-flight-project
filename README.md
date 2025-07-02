@@ -114,6 +114,13 @@ Add API docs:
 Document new endpoints and data models.
 ### 7. Deploy the Updated System
 Local:
-Run docker compose up --build to test locally.
+Run: 
+```bash
+docker compose up --build
+```
+to test locally.
+
 Production:
 Push to main branch to trigger CI/CD and deploy to your cloud provider. 
+
+---
